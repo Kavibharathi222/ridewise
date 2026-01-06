@@ -1,6 +1,4 @@
 
-
-
 import streamlit as st
 import pandas as pd
 import joblib
@@ -12,44 +10,63 @@ st.set_page_config(
     layout="wide"
 )
 
-
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
+# -------------------------------------------------
+# IMAGES
+# -------------------------------------------------
+BG_IMG = "https://camo.githubusercontent.com/10b2fb1f78b21d014a5ac328cd62cd76785b6a05463b36caa5cccc03499fae39/68747470733a2f2f736f7068696573752e6e65742f77702d636f6e74656e742f75706c6f6164732f323032312f30312f42696b652d53686172696e672d44656d616e642d31313934783530312e6a7067"
 
-DAY_IMG = "https://c.ndtvimg.com/2024-06/n7kugs6o_world-motorcycle-day-2024_625x300_21_June_24.jpg?im=FaceCrop,algorithm=dnn,width=545,height=307"
-HOUR_IMG = "https://c.ndtvimg.com/2024-06/n7kugs6o_world-motorcycle-day-2024_625x300_21_June_24.jpg?im=FaceCrop,algorithm=dnn,width=545,height=307"
+DAY_IMG = "https://c.ndtvimg.com/2024-06/n7kugs6o_world-motorcycle-day-2024_625x300_21_June_24.jpg"
+HOUR_IMG = DAY_IMG
 
-
-st.markdown("""
+# -------------------------------------------------
+# CSS (BACKGROUND + ABOUT CARD)
+# -------------------------------------------------
+st.markdown(f"""
 <style>
-.main {
-    padding: 2rem;
-}
-h1, h2, h3 {
-    color: #2C3E50;
-}
-.card {
-    background: rgba(255,255,255,0.9);
-    border-radius: 18px;
-    padding: 1.2rem;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-}
-.stButton > button {
-    background: linear-gradient(90deg, #1ABC9C, #16A085);
-    color: white;
-    border-radius: 12px;
-    padding: 0.8rem;
-    font-size: 16px;
-    font-weight: bold;
-}
-.stButton > button:hover {
-    transform: scale(1.02);
-}
-.back-btn button {
-    background: #34495E !important;
-}
-footer {visibility: hidden;}
+
+/* ---------- FULL PAGE BACKGROUND ---------- */
+.stApp {{
+    background-image: linear-gradient(
+        rgba(0,0,0,0.55),
+        rgba(0,0,0,0.55)
+    ), url("{BG_IMG}");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}}
+
+/* -------- ABOUT SECTION CARD -------- */
+.about-card {{
+    background: rgba(0, 0, 0, 0.68);
+    backdrop-filter: blur(6px);
+    padding: 2.2rem;
+    border-radius: 20px;
+    max-width: 1100px;
+    margin: auto;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.45);
+}}
+
+/* -------- HEADINGS -------- */
+.about-card h2 {{
+    color: #FFD166;
+    font-weight: 800;
+}}
+
+/* -------- PARAGRAPH TEXT -------- */
+.about-card p {{
+    color: #F1F1F1;
+    font-size: 16.5px;
+    line-height: 1.75;
+}}
+
+/* -------- STRONG -------- */
+.about-card strong {{
+    color: #4ECDC4;
+}}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -58,15 +75,11 @@ footer {visibility: hidden;}
 # =================================================
 @st.cache_resource
 def load_day_model():
-    model = joblib.load("Randomforest_day_model1.pkl")
-    features = joblib.load("Randomforest_features1.pkl")
-    return model, features
+    return joblib.load("Models/Randomforest_day_model1.pkl"), joblib.load("Models/Randomforest_features1.pkl")
 
 @st.cache_resource
 def load_hour_model():
-    model = joblib.load("xgboost_hour_model.pkl")
-    features = joblib.load("xgb_hour_features.pkl")
-    return model, features
+    return joblib.load("Models/xgboost_hour_model.pkl"), joblib.load("Models/xgb_hour_features.pkl")
 
 # =================================================
 # HEADER
@@ -74,13 +87,11 @@ def load_hour_model():
 st.title("🚲 RideWise Bike Demand Forecasting System")
 
 # =================================================
-# 🏠 HOME DASHBOARD
+# HOME PAGE
 # =================================================
 if st.session_state.page == "home":
 
     st.markdown("## 📊 Forecast Dashboard")
-    st.markdown("Choose a forecast type to continue")
-
     col1, col2 = st.columns(2)
 
     with col1:
@@ -95,131 +106,133 @@ if st.session_state.page == "home":
             st.session_state.page = "hour"
             st.rerun()
 
-
-    # st.markdown("---")
-    # st.markdown("""
-    # ### 🚀 About RideWise
-    # **RideWise** is an AI-powered system that predicts **bike demand**
-    # using weather, time, and calendar features to help
-    # bike-sharing services make data-driven decisions.
-    # """)
     st.markdown("---")
+
+    # ---------- ABOUT SECTION (WRAPPED) ----------
     st.markdown("""
-## 🚲 About RideWise
+    <div class="about-card">
+    <h2>🚲 About RideWise</h2>
 
-**RideWise** is an intelligent, AI-powered **Bike Demand Forecasting System**
-developed to support modern bike-sharing platforms in making **accurate,
-data-driven operational decisions**.
+    <p><strong>RideWise</strong> is an intelligent, AI-powered Bike Demand Forecasting System designed to help modern bike-sharing platforms make accurate, data-driven operational decisions.</p>
 
-With the rapid growth of urban mobility and shared transportation,
-predicting bike demand efficiently has become critical.
-RideWise addresses this challenge by using **Machine Learning algorithms**
-to forecast bike demand at both **daily** and **hourly** levels.
+    <p>With the rapid growth of urban mobility and shared transportation services, predicting bike demand efficiently has become essential for ensuring customer satisfaction and reducing operational costs. Traditional demand estimation methods often fail to adapt to weather changes, seasonal variations, holidays, and peak commuting hours.</p>
 
----
+    <p>RideWise supports <strong>day-wise</strong> and <strong>hour-wise</strong> forecasting. Day-wise forecasting enables long-term planning such as fleet sizing and maintenance scheduling, while hour-wise forecasting supports real-time bike redistribution and peak-hour management.</p>
+
+    <p>The system analyzes weather conditions, time-based attributes, and calendar indicators to capture complex real-world demand patterns. At its core, RideWise uses <strong>Random Forest</strong> and <strong>XGBoost</strong> models trained on historical bike-sharing datasets.</p>
+
+    <p>By improving bike availability, reducing operational costs, and enhancing customer satisfaction, RideWise contributes to sustainable transportation and smart city initiatives.</p>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+# =================================================
+# DAY & HOUR PAGES
+# (UNCHANGED — YOUR EXISTING CODE CONTINUES)
+# =================================================
 
 ## 🌍 Problem Statement
 
-Bike-sharing services often face challenges such as:
-- Shortage of bikes during peak hours
-- Excess idle bikes during low-demand periods
-- Inefficient fleet distribution
-- Increased operational and maintenance costs
+# Bike-sharing services often face challenges such as:
+# - Shortage of bikes during peak hours
+# - Excess idle bikes during low-demand periods
+# - Inefficient fleet distribution
+# - Increased operational and maintenance costs
 
-Traditional estimation methods fail to adapt to changing conditions like
-weather, holidays, and time-based demand patterns.
-RideWise solves this by leveraging historical data and predictive analytics.
+# Traditional estimation methods fail to adapt to changing conditions like
+# weather, holidays, and time-based demand patterns.
+# RideWise solves this by leveraging historical data and predictive analytics.
 
----
+# ---
 
-## 🔍 What RideWise Does
+# ## 🔍 What RideWise Does
 
-### 📅 Day-wise Demand Forecasting
-- Predicts bike demand for the **next 5 days**
-- Helps in long-term planning of:
-  - Fleet availability
-  - Maintenance schedules
-  - Workforce allocation
+# ### 📅 Day-wise Demand Forecasting
+# - Predicts bike demand for the **next 5 days**
+# - Helps in long-term planning of:
+#   - Fleet availability
+#   - Maintenance schedules
+#   - Workforce allocation
 
-### 🕒 Hour-wise Demand Forecasting
-- Predicts bike demand for the **next 6 hours**
-- Enables real-time decision-making during:
-  - Peak hours
-  - Weather changes
-  - Special events and holidays
+# ### 🕒 Hour-wise Demand Forecasting
+# - Predicts bike demand for the **next 6 hours**
+# - Enables real-time decision-making during:
+#   - Peak hours
+#   - Weather changes
+#   - Special events and holidays
 
----
+# ---
 
-## 🧠 How RideWise Works
+# ## 🧠 How RideWise Works
 
-RideWise analyzes historical bike usage data combined with multiple
-influencing factors:
+# RideWise analyzes historical bike usage data combined with multiple
+# influencing factors:
 
-### 📊 Input Features
-- 🌦 **Weather Conditions**
-  - Temperature
-  - Humidity
-  - Wind speed
-  - Weather situation
-- 🕰 **Time-based Features**
-  - Hour of the day
-  - Day of the week
-  - Month
-  - Season
-- 📆 **Calendar Information**
-  - Working day
-  - Holiday indicator
+# ### 📊 Input Features
+# - 🌦 **Weather Conditions**
+#   - Temperature
+#   - Humidity
+#   - Wind speed
+#   - Weather situation
+# - 🕰 **Time-based Features**
+#   - Hour of the day
+#   - Day of the week
+#   - Month
+#   - Season
+# - 📆 **Calendar Information**
+#   - Working day
+#   - Holiday indicator
 
-These features are processed and fed into trained **Machine Learning models**
-to generate accurate demand predictions.
+# These features are processed and fed into trained **Machine Learning models**
+# to generate accurate demand predictions.
 
----
+# ---
 
-## 🤖 Machine Learning Models Used
+# ## 🤖 Machine Learning Models Used
 
-- **Random Forest Regressor**
-  - Handles non-linear relationships
-  - Robust against overfitting
-- **XGBoost Regressor**
-  - High performance and accuracy
-  - Efficient handling of large datasets
+# - **Random Forest Regressor**
+#   - Handles non-linear relationships
+#   - Robust against overfitting
+# - **XGBoost Regressor**
+#   - High performance and accuracy
+#   - Efficient handling of large datasets
 
-The models are trained on historical data and optimized to deliver
-reliable forecasts under varying conditions.
+# The models are trained on historical data and optimized to deliver
+# reliable forecasts under varying conditions.
 
----
+# ---
 
-## 🎯 Why RideWise Matters
+# ## 🎯 Why RideWise Matters
 
-RideWise provides tangible benefits to bike-sharing platforms:
+# RideWise provides tangible benefits to bike-sharing platforms:
 
-- ✔ Improves bike availability during peak demand
-- ✔ Reduces operational and redistribution costs
-- ✔ Enhances customer satisfaction
-- ✔ Supports smart city initiatives
-- ✔ Promotes sustainable and eco-friendly transportation
+# - ✔ Improves bike availability during peak demand
+# - ✔ Reduces operational and redistribution costs
+# - ✔ Enhances customer satisfaction
+# - ✔ Supports smart city initiatives
+# - ✔ Promotes sustainable and eco-friendly transportation
 
----
+# ---
 
-## 📊 Technology Stack
+# ## 📊 Technology Stack
 
-- **Python** for backend logic
-- **Machine Learning** for predictive modeling
-- **Streamlit** for interactive and user-friendly UI
-- **Scikit-learn & XGBoost** for model development
-- **Matplotlib** for visualizations
-- **Joblib** for model persistence
+# - **Python** for backend logic
+# - **Machine Learning** for predictive modeling
+# - **Streamlit** for interactive and user-friendly UI
+# - **Scikit-learn & XGBoost** for model development
+# - **Matplotlib** for visualizations
+# - **Joblib** for model persistence
 
----
+# ---
 
-## 🚀 Conclusion
+# ## 🚀 Conclusion
 
-RideWise transforms raw historical data into **actionable insights**,
-empowering bike-sharing systems to operate more efficiently and intelligently.
+# RideWise transforms raw historical data into **actionable insights**,
+# empowering bike-sharing systems to operate more efficiently and intelligently.
 
-By combining data science, machine learning, and an intuitive interface,
-RideWise contributes to **smarter urban mobility solutions**.
-""")
+# By combining data science, machine learning, and an intuitive interface,
+# RideWise contributes to **smarter urban mobility solutions**.
+# """)
 
 
 
