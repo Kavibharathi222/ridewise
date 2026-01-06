@@ -18,7 +18,7 @@ if "page" not in st.session_state:
 # -------------------------------------------------
 BG_IMG = "https://camo.githubusercontent.com/10b2fb1f78b21d014a5ac328cd62cd76785b6a05463b36caa5cccc03499fae39/68747470733a2f2f736f7068696573752e6e65742f77702d636f6e74656e742f75706c6f6164732f323032312f30312f42696b652d53686172696e672d44656d616e642d31313934783530312e6a7067"
 
-DAY_IMG = "https://shop99india.com/wp-content/uploads/2024/09/Bike-rentals-in-Silvassa.png"
+DAY_IMG = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoFQV_9em_oprcNukVoqhwCOchjOjGq9zjnQ&s"
 HOUR_IMG = "https://yulu-blogs-cdn.yulu.bike/Whats_App_Image_2023_10_05_at_18_21_02_d147d018_ec042c8bc5.jpg"
 
 # -------------------------------------------------
